@@ -10,8 +10,10 @@ public class SimpleServerScript : MonoBehaviour {
     public string Port = "8765";
     public Text ReceiveDataTextUI;
 
-	// Use this for initialization
-	void Start () {
+    public IData _data = new ServerJsonData();
+
+    // Use this for initialization
+    void Start () {
 		
 	}
 	
@@ -27,7 +29,7 @@ public class SimpleServerScript : MonoBehaviour {
 
     IEnumerator Post()
     {
-        var inData = new byte[] { 1, 2, 3 };
+        var inData = _data.GetInData();
         WWW www = new WWW(string.Format("http://{0}:{1}", IP, Port), inData);
  
         yield return www;
@@ -45,13 +47,6 @@ public class SimpleServerScript : MonoBehaviour {
 
     private void PrintBytes(byte[] bytes)
     {
-        StringBuilder sb = new StringBuilder();
-        var splitChar = ',';
-        foreach (var bt in bytes)
-        {
-            sb.Append(bt);
-            sb.Append(splitChar);
-        }
-        ReceiveDataTextUI.text = sb.ToString().TrimEnd(splitChar);
+        ReceiveDataTextUI.text = _data.FormatReceiveData(bytes);
     }
 }
